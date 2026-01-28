@@ -43,6 +43,15 @@ public:
     std::vector<Task*> getTasksByStatus(Status status);
     std::vector<Task*> getTasksByPriority(Priority priority);
     std::vector<Task*> searchTasks(const std::string& keyword);
+    std::vector<Task*> getTasksByCategory(const std::string& category);
+    std::vector<Task*> getTasksByTag(const std::string& tag);
+    
+    // Sorting and filtering
+    void sortTasksByPriority(std::vector<Task*>& taskList, bool descending = true);
+    void sortTasksByDueDate(std::vector<Task*>& taskList, bool ascending = true);
+    void sortTasksByTitle(std::vector<Task*>& taskList, bool ascending = true);
+    std::vector<Task*> getOverdueTasks();
+    std::vector<Task*> getUpcomingTasks(int days = 7);
 
     // Display operations
     void displayAllTasks() const;
@@ -53,6 +62,11 @@ public:
     int getTaskCount() const;
     int getCompletedTaskCount() const;
     int getPendingTaskCount() const;
+    
+    // Export/Import
+    bool exportToJSON(const std::string& filename) const;
+    bool exportToCSV(const std::string& filename) const;
+    bool importFromJSON(const std::string& filename);
 };
 
 #endif // TASKMANAGER_H

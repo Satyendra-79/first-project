@@ -207,3 +207,152 @@ int TaskManager::getPendingTaskCount() const {
                             return task->getStatus() == Status::PENDING;
                         });
 }
+
+std::vector<Task*> TaskManager::getTasksByCategory(const std::string& category) {
+    std::vector<Task*> result;
+    for (auto& task : tasks) {
+        if (task->getCategory() == category) {
+            result.push_back(task.get());
+        }
+    }
+    return result;
+}
+
+std::vector<Task*> TaskManager::getTasksByTag(const std::string& tag) {
+    std::vector<Task*> result;
+    for (auto& task : tasks) {
+        if (task->hasTag(tag)) {
+            result.push_back(task.get());
+        }
+    }
+    return result;
+}
+
+void TaskManager::sortTasksByPriority(std::vector<Task*>& taskList, bool descending) {
+    std::sort(taskList.begin(), taskList.end(), 
+        [descending](Task* a, Task* b) {
+            return descending ? 
+                static_cast<int>(a->getPriority()) > static_cast<int>(b->getPriority()) :
+                static_cast<int>(a->getPriority()) < static_cast<int>(b->getPriority());
+        });
+}
+
+void TaskManager::sortTasksByDueDate(std::vector<Task*>& taskList, bool ascending) {
+    std::sort(taskList.begin(), taskList.end(),
+        [ascending](Task* a, Task* b) {
+            return ascending ? a->getDueDate() < b->getDueDate() : a->getDueDate() > b->getDueDate();
+        });
+}
+
+void TaskManager::sortTasksByTitle(std::vector<Task*>& taskList, bool ascending) {
+    std::sort(taskList.begin(), taskList.end(),
+        [ascending](Task* a, Task* b) {
+            return ascending ? a->getTitle() < b->getTitle() : a->getTitle() > b->getTitle();
+        });
+}
+
+std::vector<Task*> TaskManager::getOverdueTasks() {
+    std::vector<Task*> result;
+    time_t now = time(nullptr);
+    
+    for (auto& task : tasks) {
+        if (task->getStatus() != Status::COMPLETED && task->getDueDate() < now) {
+            result.push_back(task.get());
+        }
+    }
+    return result;
+}
+
+std::vector<Task*> TaskManager::getUpcomingTasks(int days) {
+    std::vector<Task*> result;
+    time_t now = time(nullptr);
+    time_t future = now + (days * 24 * 60 * 60);
+    
+    for (auto& task : tasks) {
+        if (task->getStatus() != Status::COMPLETED && 
+            task->getDueDate() >= now && 
+            task->getDueDate() <= future) {
+            result.push_back(task.get());
+        }
+    }
+    return result;
+}
+
+bool TaskManager::exportToJSON(const std::string& filename) const {
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        return false;
+    }
+
+    file << "{\n  \"tasks\": [\n";
+    
+    for (size_t i = 0; i < tasks.size(); ++i) {
+        const auto& task = tasks[i];
+        file << "    {\n";
+        file << "      \"id\": " << task->getId() << ",\n";
+        file << "      \"title\": \"" << task->getTitle() << "\",\n";
+        file << "      \"description\": \"" << task->getDescription() << "\",\n";
+        file << "      \"category\": \"" << task->getCategory() << "\",\n";
+        file << "      \"priority\": \"" << Task::priorityToString(task->getPriority()) << "\",\n";
+        file << "      \"status\": \"" << Task::statusToString(task->getStatus()) << "\",\n";
+        file << "      \"created_at\": " << task->getCreatedAt() << ",\n";
+        file << "      \"due_date\": " << task->getDueDate() << ",\n";
+        file << "      \"tags\": [";
+        
+        auto tags = task->getTags();
+        bool firstTag = true;
+        for (const auto& tag : tags) {
+            if (!firstTag) file << ", ";
+            file << "\"" << tag << "\"";
+            firstTag = false;
+        }
+        file << "]\n";
+        file << "    }";
+        if (i < tasks.size() - 1) file << ",";
+        file << "\n";
+    }
+    
+    file << "  ]\n}\n";
+    file.close();
+    return true;
+}
+
+bool TaskManager::exportToCSV(const std::string& filename) const {
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        return false;
+    }
+
+    // CSV Header
+    file << "ID,Title,Description,Category,Priority,Status,Created At,Due Date,Tags\n";
+    
+    for (const auto& task : tasks) {
+        file << task->getId() << ","
+             << "\"" << task->getTitle() << "\","
+             << "\"" << task->getDescription() << "\","
+             << "\"" << task->getCategory() << "\","
+             << Task::priorityToString(task->getPriority()) << ","
+             << Task::statusToString(task->getStatus()) << ","
+             << task->getCreatedAt() << ","
+             << task->getDueDate() << ",\"";
+        
+        auto tags = task->getTags();
+        bool first = true;
+        for (const auto& tag : tags) {
+            if (!first) file << ";";
+            file << tag;
+            first = false;
+        }
+        file << "\"\n";
+    }
+    
+    file.close();
+    return true;
+}
+
+bool TaskManager::importFromJSON(const std::string& filename) {
+    // Basic JSON import - would need a proper JSON parser for production
+    std::cout << "JSON import feature coming soon! Please use the native .dat format for now.\n";
+    return false;
+}
+

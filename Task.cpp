@@ -2,11 +2,12 @@
 #include <sstream>
 #include <iomanip>
 #include <vector>
+#include <algorithm>
 
 Task::Task(int id, const std::string& title, const std::string& description,
            Priority priority, time_t dueDate)
     : id(id), title(title), description(description), priority(priority),
-      status(Status::PENDING), dueDate(dueDate) {
+      status(Status::PENDING), dueDate(dueDate), category("General") {
     createdAt = time(nullptr);
 }
 
@@ -18,6 +19,8 @@ Priority Task::getPriority() const { return priority; }
 Status Task::getStatus() const { return status; }
 time_t Task::getCreatedAt() const { return createdAt; }
 time_t Task::getDueDate() const { return dueDate; }
+std::set<std::string> Task::getTags() const { return tags; }
+std::string Task::getCategory() const { return category; }
 
 // Setters
 void Task::setTitle(const std::string& title) { this->title = title; }
@@ -25,6 +28,26 @@ void Task::setDescription(const std::string& description) { this->description = 
 void Task::setPriority(Priority priority) { this->priority = priority; }
 void Task::setStatus(Status status) { this->status = status; }
 void Task::setDueDate(time_t dueDate) { this->dueDate = dueDate; }
+void Task::setCategory(const std::string& category) { this->category = category; }
+
+// Tag management
+void Task::addTag(const std::string& tag) {
+    if (!tag.empty()) {
+        tags.insert(tag);
+    }
+}
+
+void Task::removeTag(const std::string& tag) {
+    tags.erase(tag);
+}
+
+bool Task::hasTag(const std::string& tag) const {
+    return tags.find(tag) != tags.end();
+}
+
+void Task::clearTags() {
+    tags.clear();
+}
 
 // Convert priority enum to string
 std::string Task::priorityToString(Priority p) {
@@ -76,10 +99,23 @@ std::string Task::toString() const {
     oss << "Task ID: " << id << "\n"
         << "Title: " << title << "\n"
         << "Description: " << description << "\n"
+        << "Category: " << category << "\n"
         << "Priority: " << priorityToString(priority) << "\n"
         << "Status: " << statusToString(status) << "\n"
         << "Created: " << formatTime(createdAt) << "\n"
         << "Due Date: " << formatTime(dueDate) << "\n";
+    
+    if (!tags.empty()) {
+        oss << "Tags: ";
+        bool first = true;
+        for (const auto& tag : tags) {
+            if (!first) oss << ", ";
+            oss << tag;
+            first = false;
+        }
+        oss << "\n";
+    }
+    
     return oss.str();
 }
 
@@ -89,7 +125,16 @@ std::string Task::toFileFormat() const {
     oss << id << "|" << title << "|" << description << "|"
         << static_cast<int>(priority) << "|"
         << static_cast<int>(status) << "|"
-        << createdAt << "|" << dueDate;
+        << createdAt << "|" << dueDate << "|" << category << "|";
+    
+    // Serialize tags
+    bool first = true;
+    for (const auto& tag : tags) {
+        if (!first) oss << ",";
+        oss << tag;
+        first = false;
+    }
+    
     return oss.str();
 }
 
@@ -103,7 +148,7 @@ Task Task::fromFileFormat(const std::string& line) {
         tokens.push_back(token);
     }
 
-    if (tokens.size() != 7) {
+    if (tokens.size() < 7) {
         throw std::runtime_error("Invalid file format");
     }
 
@@ -118,6 +163,21 @@ Task Task::fromFileFormat(const std::string& line) {
     Task task(id, title, description, priority, dueDate);
     task.status = status;
     task.createdAt = createdAt;
+    
+    // Parse category and tags if available
+    if (tokens.size() >= 8) {
+        task.category = tokens[7];
+    }
+    
+    if (tokens.size() >= 9 && !tokens[8].empty()) {
+        std::istringstream tagStream(tokens[8]);
+        std::string tag;
+        while (std::getline(tagStream, tag, ',')) {
+            if (!tag.empty()) {
+                task.addTag(tag);
+            }
+        }
+    }
 
     return task;
 }

@@ -3,6 +3,8 @@
 
 #include <string>
 #include <ctime>
+#include <vector>
+#include <set>
 
 /**
  * @brief Enumeration for task priority levels
@@ -34,6 +36,8 @@ private:
     Status status;
     time_t createdAt;
     time_t dueDate;
+    std::set<std::string> tags;
+    std::string category;
 
 public:
     /**
@@ -50,6 +54,8 @@ public:
     Status getStatus() const;
     time_t getCreatedAt() const;
     time_t getDueDate() const;
+    std::set<std::string> getTags() const;
+    std::string getCategory() const;
 
     // Setters
     void setTitle(const std::string& title);
@@ -57,6 +63,13 @@ public:
     void setPriority(Priority priority);
     void setStatus(Status status);
     void setDueDate(time_t dueDate);
+    void setCategory(const std::string& category);
+    
+    // Tag management
+    void addTag(const std::string& tag);
+    void removeTag(const std::string& tag);
+    bool hasTag(const std::string& tag) const;
+    void clearTags();
 
     // Utility methods
     std::string toString() const;

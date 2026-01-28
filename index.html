@@ -1,1 +1,422 @@
-<p>I am learing</p>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Professional Task Manager</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-color: #2563eb;
+        --secondary-color: #1e40af;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --dark-bg: #1f2937;
+        --light-bg: #f3f4f6;
+        --card-bg: #ffffff;
+        --text-primary: #111827;
+        --text-secondary: #6b7280;
+        --border-color: #e5e7eb;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: var(--text-primary);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .header {
+        background: var(--card-bg);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        color: var(--primary-color);
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+      }
+
+      .header p {
+        color: var(--text-secondary);
+        font-size: 1.1em;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .feature-card {
+        background: var(--card-bg);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .feature-card h3 {
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        font-size: 1.4em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .feature-card p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+      }
+
+      .icon {
+        font-size: 1.5em;
+      }
+
+      .tech-stack {
+        background: var(--card-bg);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+      }
+
+      .tech-stack h2 {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .tech-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+      }
+
+      .tech-badge {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+      }
+
+      .cta-section {
+        background: var(--card-bg);
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      .cta-section h2 {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 25px;
+      }
+
+      .btn {
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+        font-size: 1em;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+      }
+
+      .btn-secondary {
+        background: var(--light-bg);
+        color: var(--primary-color);
+      }
+
+      .btn-secondary:hover {
+        background: var(--border-color);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin: 30px 0;
+      }
+
+      .stat-card {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+      }
+
+      .stat-card h3 {
+        font-size: 2.5em;
+        margin-bottom: 5px;
+      }
+
+      .stat-card p {
+        opacity: 0.9;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 20px;
+        color: white;
+        margin-top: 30px;
+      }
+
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 2em;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1>
+          <span class="icon">📝</span>
+          Professional Task Management System
+          <span class="icon">✨</span>
+        </h1>
+        <p>A feature-rich, enterprise-grade C++ task management application</p>
+      </header>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>10+</h3>
+          <p>Core Features</p>
+        </div>
+        <div class="stat-card">
+          <h3>C++14</h3>
+          <p>Modern Standard</p>
+        </div>
+        <div class="stat-card">
+          <h3>100%</h3>
+          <p>Open Source</p>
+        </div>
+        <div class="stat-card">
+          <h3>OOP</h3>
+          <p>Design Pattern</p>
+        </div>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3><span class="icon">🎯</span> Smart Task Management</h3>
+          <p>
+            Create, update, and organize tasks with priorities, categories, and
+            custom tags for better organization.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3><span class="icon">🏷️</span> Tags & Categories</h3>
+          <p>
+            Organize tasks with flexible tagging system and category support for
+            advanced filtering.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3><span class="icon">🔍</span> Advanced Filtering</h3>
+          <p>
+            Sort by priority, due date, or title. Filter by status, tags,
+            categories, and view overdue tasks.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3><span class="icon">📊</span> Analytics Dashboard</h3>
+          <p>
+            View comprehensive statistics and insights about your task
+            completion rates and productivity.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3><span class="icon">💾</span> Export/Import</h3>
+          <p>
+            Export tasks to JSON or CSV formats for backup, analysis, or
+            integration with other tools.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3><span class="icon">🛡️</span> Input Validation</h3>
+          <p>
+            Robust validation system ensures data integrity and prevents invalid
+            inputs.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3><span class="icon">📝</span> Logging System</h3>
+          <p>
+            Professional logging with multiple levels (DEBUG, INFO, WARNING,
+            ERROR, CRITICAL) for troubleshooting.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3><span class="icon">⚙️</span> Configuration Manager</h3>
+          <p>
+            Customizable settings via configuration file for personalized
+            experience.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3><span class="icon">🧪</span> Unit Testing</h3>
+          <p>Comprehensive test suite ensures reliability and code quality.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3><span class="icon">🚀</span> CI/CD Pipeline</h3>
+          <p>
+            Automated build and test workflows with GitHub Actions for
+            continuous integration.
+          </p>
+        </div>
+      </div>
+
+      <div class="tech-stack">
+        <h2>🛠️ Technology Stack</h2>
+        <div class="tech-list">
+          <span class="tech-badge">C++14</span>
+          <span class="tech-badge">STL Containers</span>
+          <span class="tech-badge">Smart Pointers</span>
+          <span class="tech-badge">OOP</span>
+          <span class="tech-badge">File I/O</span>
+          <span class="tech-badge">Design Patterns</span>
+          <span class="tech-badge">GitHub Actions</span>
+          <span class="tech-badge">Unit Testing</span>
+          <span class="tech-badge">Logging</span>
+          <span class="tech-badge">Configuration Management</span>
+        </div>
+      </div>
+
+      <div class="cta-section">
+        <h2>🚀 Get Started</h2>
+        <p>Clone the repository and start managing your tasks professionally</p>
+        <div class="cta-buttons">
+          <a
+            href="https://github.com/Satyendra-79/first-project"
+            class="btn btn-primary"
+            >View on GitHub</a
+          >
+          <a
+            href="https://github.com/Satyendra-79/first-project/releases"
+            class="btn btn-secondary"
+            >Download Latest Release</a
+          >
+        </div>
+        <div
+          style="
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--light-bg);
+            border-radius: 8px;
+          "
+        >
+          <h3 style="margin-bottom: 15px; color: var(--primary-color)">
+            Quick Start Commands
+          </h3>
+          <pre
+            style="
+              background: var(--dark-bg);
+              color: #10b981;
+              padding: 15px;
+              border-radius: 5px;
+              text-align: left;
+              overflow-x: auto;
+            "
+          >
+git clone https://github.com/Satyendra-79/first-project.git
+cd first-project
+make
+./task_manager</pre
+          >
+        </div>
+      </div>
+
+      <footer class="footer">
+        <p>
+          Built with ❤️ using Modern C++ •
+          <a href="LICENSE" style="color: white">MIT License</a>
+        </p>
+        <p style="margin-top: 10px; opacity: 0.8">
+          © 2026 Satyendra • Professional Task Management System
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
